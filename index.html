@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ОФИЦИАЛЬНОЕ УВЕДОМЛЕНИЕ</title>
+    <style>
+        body {
+            background-color: #f4f1ea;
+            font-family: "Times New Roman", Times, serif;
+            color: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .document {
+            background: #fff;
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            border: 2px solid #333;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .header {
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px double #333;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        .case-number {
+            font-style: italic;
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+        .content {
+            font-size: 16px;
+            line-height: 1.6;
+            text-align: justify;
+            margin-bottom: 30px;
+        }
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        button {
+            background-color: #222;
+            color: #fff;
+            border: 1px solid #000;
+            padding: 12px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background-color: #fff;
+            color: #222;
+        }
+        button.secondary {
+            background-color: #fff;
+            color: #555;
+            border: 1px dashed #555;
+        }
+        button.secondary:hover {
+            background-color: #f5f5f5;
+            color: #000;
+        }
+        #response-box {
+            margin-top: 25px;
+            padding: 15px;
+            border: 1px solid #bc9b6a;
+            background-color: #fffdf5;
+            font-style: italic;
+            text-align: center;
+            display: none;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+        .seal {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            width: 90px;
+            height: 90px;
+            border: 3px dashed rgba(150, 0, 0, 0.6);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: rgba(150, 0, 0, 0.6);
+            font-weight: bold;
+            font-size: 10px;
+            transform: rotate(-15deg);
+            text-align: center;
+            text-transform: uppercase;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="document">
+    <div class="header">
+        Генеральная Прокуратура Девичьего Братства<br>
+        Следственный комитет по особо важным делам
+    </div>
+    
+    <div class="case-number">Дело № 1707-ИР</div>
+    
+    <div class="title">Повестка<br>о вызове на следственный эксперимент</div>
+    
+    <div class="content">
+        Гражданка <strong>Ирина</strong>, Вы обвиняетесь в умышленном планировании изменения гражданского статуса, тайном сговоре с гражданином Чолак Сергеем и противоправном хищении его фамилии. 
+        <br><br>
+        На основании вышеизложенного, Вы <strong>обязаны явиться 17 июля в 19:00</strong> для проведения принудительного допроса и очной ставки с главными свидетелями (подругами). В рамках расследования будет проведена обязательная экспертиза праздничных напитков. 
+        <br><br>
+        Уклонение от явки влечет за собой немедленное занесение в «черный список» и автоматическое признание вины с отягчающими обстоятельствами.
+    </div>
+
+    <div class="buttons-container" id="action-buttons">
+        <button onclick="sendResponse('accept')">Признать вину и явиться на допрос</button>
+        <button class="secondary" onclick="sendResponse('appeal')">Подать ходатайство об обжаловании</button>
+    </div>
+
+    <div id="response-box"></div>
+    
+    <div class="seal">Одобрено<br>Судом Подруг</div>
+</div>
+
+<script>
+    function sendResponse(userChoice) {
+        // Отправляем запрос на наш Python сервер
+        fetch('/respond', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ choice: userChoice }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Скрываем кнопки
+            document.getElementById('action-buttons').style.display = 'none';
+            
+            // Показываем официальный ответ
+            const responseBox = document.getElementById('response-box');
+            responseBox.innerText = data.reply;
+            responseBox.style.display = 'block';
+        })
+        .catch((error) => {
+            console.error('Ошибка:', error);
+            alert('Сбой судебной системы. Попробуйте еще раз.');
+        });
+    }
+</script>
+
+</body>
+</html>
